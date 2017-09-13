@@ -47,7 +47,7 @@ namespace CreativeSpore
 
         public eCollFlags CollFlags = eCollFlags.NONE;
 
-        public DoorCallBackDelegate DoorCallBack = null;
+        public Vec2CallBackDelegate DoorCallBack = null;
 
         public Rect CollRect = new Rect(-0.14f, -0.04f, 0.28f, 0.12f);
 

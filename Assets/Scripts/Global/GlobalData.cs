@@ -16,7 +16,7 @@ namespace RPGGame.Global
     public delegate void DialogBackDelegate(bool result);
     public delegate void CallBackDelegate();
     public delegate void ActionCallBackDelegate(Action act);
-    public delegate void DoorCallBackDelegate(Vector2 originPos);
+    public delegate void Vec2CallBackDelegate(Vector2 originPos);
     #endregion
 
     /// <summary>
