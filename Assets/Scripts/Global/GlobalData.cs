@@ -128,7 +128,54 @@ namespace RPGGame.Global
             }
         }
 
-        private static string _gamePath = "";
+        //游戏路径说明
+        //顶级目录下面分Global 和 数据文件夹
+        //Global文件下下面存放全局使用数据:如main文件,表文件,及其他原始数据
+        //数据文件夹为每个游戏的文件夹,随主程序的文件夹叫Default
+        //游戏文件夹下面存Data和存档文件,及archived.setting
+        //Data文件下目前分Map 和 Script分别为地图和脚本 
+        //Script文件夹下面分Map,Skill,Task三个脚本文件
+        //以上是目前存储方式
+
+        /// <summary>
+        /// 全局数据路径
+        /// </summary>
+        public static string GlobalDataPath
+        {
+            get
+            {
+                return Application.persistentDataPath + "/Global";
+            }
+        }
+        /// <summary>
+        /// 全局主代码文件
+        /// </summary>
+        public static string GlobalMainPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(GlobalPath.GlobalDataPath))
+                {
+                    return "";
+                }
+                return GlobalPath.GlobalDataPath + "/Main";
+            }
+        }
+        /// <summary>
+        /// 全局Table路径
+        /// </summary>
+        public static string GlobalTablePath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(GlobalPath.GlobalDataPath))
+                {
+                    return "";
+                }
+                return GlobalPath.GlobalDataPath + "/Table/";
+            }
+        }
+
         /// <summary>
         /// 游戏路径
         /// </summary>
@@ -168,7 +215,7 @@ namespace RPGGame.Global
                 {
                     return "";
                 }
-                return GlobalPath.GamePath + "/Data/Script/";
+                return GlobalPath.GamePath + "/Script/";
             }
         }
         /// <summary>
@@ -231,20 +278,6 @@ namespace RPGGame.Global
         }
 
         /// <summary>
-        /// 表格路径
-        /// </summary>
-        public static string TablePath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(GlobalPath.GamePath))
-                {
-                    return "";
-                }
-                return GlobalPath.GamePath + "/Data/Table/";
-            }
-        }
-        /// <summary>
         /// 地图路径
         /// </summary>
         public static string MapPath
@@ -255,7 +288,7 @@ namespace RPGGame.Global
                 {
                     return "";
                 }
-                return GlobalPath.GamePath + "/Data/Maps/";
+                return GlobalPath.GamePath + "/Maps/";
             }
         }
 

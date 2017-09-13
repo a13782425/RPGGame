@@ -26,7 +26,7 @@ namespace RPGGame.Manager
             script.PushAssembly(typeof(GameObject).GetTypeInfo().Assembly);                           //UnityEngine.dll
             script.PushAssembly(typeof(UnityEngine.UI.CanvasScaler).GetTypeInfo().Assembly);          //UnityEngine.UI.dll
             script.PushAssembly(typeof(UnityEngine.Networking.MsgType).GetTypeInfo().Assembly);       //UnityEngine.Networking.dll
-            script.LoadFile(Global.GlobalPath.ScriptPath + "Main");
+            script.LoadFile(Global.GlobalPath.GlobalMainPath);
             script.SetObject("MainPlayer", ScoUtils.GetMainPlayer());
             script.LoadFile(file);
             script.GetValue("Map").GetValue("Take").call();

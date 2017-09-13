@@ -32,10 +32,6 @@ namespace RPGGame.Tools
                     _instance._currentGameObject = game;
                     _instance._currentTransform = game.transform;
                     _instance._mono = _instance._currentGameObject.AddComponent<DontDestroyGameObject>();
-                    //if (Application.isPlaying)
-                    //{
-                    //    UnityEngine.Object.DontDestroyOnLoad(game);
-                    //}
                 }
                 return _instance;
             }

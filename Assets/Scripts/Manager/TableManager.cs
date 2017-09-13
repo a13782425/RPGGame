@@ -201,7 +201,7 @@ namespace RPGGame.Manager
 
         private List<T> LoadTable<T>(string name) where T : new()
         {
-            string content = FileUtils.Instance.ReadFile(Global.GlobalPath.TablePath + name);
+            string content = FileUtils.Instance.ReadFile(Global.GlobalPath.GlobalTablePath + name);
             //TextAsset text = Resources.Load<TextAsset>(TABLE_PATH + name);
             return JsonMapper.ToObject<List<T>>(EncryptUtils.Instance.Decipher(content, EncryptUtils.GlobalEncryptKey));
         }

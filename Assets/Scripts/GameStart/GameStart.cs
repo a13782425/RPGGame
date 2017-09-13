@@ -23,19 +23,8 @@ public class GameStart : MonoBehaviour
             Debug.LogError("加载场景相同，请重新设置！");
             return;
         }
-	    Debug.LogError(Application.persistentDataPath + "/Default");
-	    //#if UNITY_EDITOR
-	    ZipUtils.UnzipFile(GlobalPath.StreamingAssetsPath + "/Default", Application.persistentDataPath + "/Default");
-	    //#endif
         Observer.Instance.BeginGame(_loadScene);
+        //StartCoroutine(LevelManager.Instance.SwitchToLevel(_loadScene, null));
 
-        //StartCoroutine(BeginGame());
     }
-
-    //private IEnumerator BeginGame()
-    //{
-    //    yield return StartCoroutine(GameManager.Instance.InitGame());
-    //    yield return null;
-    //    StartCoroutine(LevelManager.Instance.SwitchToLevel(_loadScene, null));
-    //}
 }

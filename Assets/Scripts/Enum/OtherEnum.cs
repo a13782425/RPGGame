@@ -59,6 +59,7 @@ namespace RPGGame.Enums
         Cancel,
         OK
     }
+
     /// <summary>
     /// 游戏消息
     /// </summary>
@@ -67,6 +68,9 @@ namespace RPGGame.Enums
         None
     }
 
+    /// <summary>
+    /// 对话框枚举
+    /// </summary>
     public enum DialogEnum
     {
         /// <summary>
@@ -91,6 +95,9 @@ namespace RPGGame.Enums
         Tip
     }
 
+    /// <summary>
+    /// Npc类型枚举
+    /// </summary>
     public enum NpcTypeEnum
     {
         None = 0,
@@ -127,7 +134,9 @@ namespace RPGGame.Enums
 
     }
 
-
+    /// <summary>
+    /// 天气枚举
+    /// </summary>
     public enum WeatherEnum
     {
         [BGameEditor("随机")]
@@ -138,6 +147,37 @@ namespace RPGGame.Enums
         Rain = 2,
         [BGameEditor("下雪")]
         Snow = 3
+    }
+
+    /// <summary>
+    /// 字节码脚本枚举
+    /// </summary>
+    public enum ScoScriptEnum
+    {
+        /// <summary>
+        /// 地图类型的Script,主要控制当前场景全局设置
+        /// </summary>
+        Map,
+        /// <summary>
+        /// 技能类型的Script,主要控制技能伤害盘定及计算
+        /// </summary>
+        Skill,
+        /// <summary>
+        /// 任务类型的Script,主要书写任务相关模块
+        /// </summary>
+        Task,
+        /// <summary>
+        /// Npc类型的Script,主要书写Npc的行为操作
+        /// </summary>
+        Npc,
+        /// <summary>
+        /// 物品类型的Script,主要书写物体有何用,目前待定
+        /// </summary>
+        Item,
+        /// <summary>
+        /// 怪物类型的Script,主要书写怪物Ai和行为
+        /// </summary>
+        Monster
     }
 
 }
