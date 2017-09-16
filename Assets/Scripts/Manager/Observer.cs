@@ -140,8 +140,8 @@ public class Observer : MonoBehaviour
         DeviceManager.Instance.Load();
         //yield return null;
         //MonsterManager.Instance.Load();
-        //yield return null;
-        //ScorpioManager.Instance.Load();
+        yield return null;
+        ScorpioManager.Instance.Load();
 #if UNITY_EDITOR
         yield return null;
         QuickMemoryEditorManager.Instance.Load();

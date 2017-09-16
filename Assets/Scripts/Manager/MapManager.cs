@@ -29,11 +29,11 @@ namespace RPGGame.Manager
 
         private Dictionary<int, List<GameObject>> _cacheNpcDic = new Dictionary<int, List<GameObject>>();
 
-        private ScriptObject _currentScript = null;
+        private ScriptTable _currentScript = null;
         /// <summary>
         /// 当前地图的脚本
         /// </summary>
-        public ScriptObject CurrentScript { get { return _currentScript; } }
+        public ScriptTable CurrentScript { get { return _currentScript; } }
 
         private MapDTO _lastMapDTO = null;
         public MapDTO LastMapDTO
@@ -181,9 +181,9 @@ namespace RPGGame.Manager
             this.CurrentMap.MapData = this.CurrentMapData;
             if (!string.IsNullOrEmpty(this.CurrentMapDTO.ScriptPath))
             {
-                ScorpioManager.Instance.LoadFile(Global.GlobalPath.MapScriptPath + this.CurrentMapDTO.ScriptPath);
-                //_currentScript = ScorpioManager.Instance.LoadFile(Global.GlobalPath.MapScriptPath + this.CurrentMapDTO.ScriptPath);
-                //_currentScript.SetValue("MainPlayer", ScorpioManager.Instance.ScriptEngine.CreateObject(ScoUtils.GetMainPlayer()));
+                ScorpioManager.Instance.LoadFile(ScoScriptEnum.Map, this.CurrentMapDTO.ScriptPath);
+                _currentScript = ScorpioManager.Instance.GetScriptTableByName(ScoScriptEnum.Map, this.CurrentMapDTO.ScriptPath);
+                ScorpioManager.Instance.Call(CurrentScript, "Take");
             }
             else
             {

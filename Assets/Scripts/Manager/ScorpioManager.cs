@@ -1,53 +1,99 @@
-﻿using RPGGame.Utils;
+﻿using RPGGame.Enums;
+using RPGGame.Utils;
 using Scorpio;
 using Scorpio.Userdata;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace RPGGame.Manager
 {
     public class ScorpioManager : RPGGame.Tools.Singleton<ScorpioManager>, IManager
     {
-        private Script _scriptEngine = null;         //脚本引擎
-        /// <summary>
-        /// 游戏脚本引擎
-        /// </summary>
-        public Script ScriptEngine { get { return _scriptEngine; } }
+        private Dictionary<ScoScriptEnum, Script> _currentScript = new Dictionary<ScoScriptEnum, Script>();
 
-        public string GetStackInfo { get { return ScriptEngine != null ? ScriptEngine.GetStackInfo() : ""; } }
+        public Dictionary<ScoScriptEnum, Script> CurrentScript { get { return _currentScript; } }
 
-        public void LoadFile(string file)
+        private Dictionary<ScoScriptEnum, List<string>> _currentLoadFileName = new Dictionary<ScoScriptEnum, List<string>>();
+        public Dictionary<ScoScriptEnum, List<string>> CurrentLoadFileName { get { return _currentLoadFileName; } }
+
+        //private Script _scriptEngine = null;         //脚本引擎
+        ///// <summary>
+        ///// 游戏脚本引擎
+        ///// </summary>
+        //public Script ScriptEngine { get { return _scriptEngine; } }
+
+        //public string GetStackInfo { get { return ScriptEngine != null ? ScriptEngine.GetStackInfo() : ""; } }
+
+        public ScriptTable LoadFile(ScoScriptEnum scriptEnum, string fileName)
         {
-            Script script = new Script();
-            script.LoadLibrary();
-            script.PushAssembly(typeof(System.Action).GetTypeInfo().Assembly);                        //System.Core.dll
-            script.PushAssembly(typeof(GameObject).GetTypeInfo().Assembly);                           //UnityEngine.dll
-            script.PushAssembly(typeof(UnityEngine.UI.CanvasScaler).GetTypeInfo().Assembly);          //UnityEngine.UI.dll
-            script.PushAssembly(typeof(UnityEngine.Networking.MsgType).GetTypeInfo().Assembly);       //UnityEngine.Networking.dll
-            script.LoadFile(Global.GlobalPath.GlobalMainPath);
-            script.SetObject("MainPlayer", ScoUtils.GetMainPlayer());
-            script.LoadFile(file);
-            script.GetValue("Map").GetValue("Take").call();
+            switch (scriptEnum)
+            {
+                case ScoScriptEnum.Map:
+                    return LoadMapFile(fileName);
+                case ScoScriptEnum.Skill:
+                case ScoScriptEnum.Task:
+                case ScoScriptEnum.Npc:
+                case ScoScriptEnum.Item:
+                case ScoScriptEnum.Monster:
+                default:
+                    Debug.LogError("未知脚本类型!!!");
+                    return null;
+            }
+        }
+
+        public ScriptTable LoadMapFile(string fileName)
+        {
+            ScriptTable scriptTable = GetScriptTableByName(ScoScriptEnum.Map, fileName);
+            if (scriptTable == null)
+            {
+                //获取到文件名称
+                string name = Path.GetFileNameWithoutExtension(fileName);
+                Script script = CurrentScript[ScoScriptEnum.Map];
+                string str = FileUtils.Instance.ReadFile(Global.GlobalPath.MapScriptPath + name);
+                str = str.Insert(0, name + "={");
+                str += "}";
+                script.LoadString(str);
+                ScriptObject obj = script.GetValue(name);
+                if (obj.IsNull)
+                {
+                    Debug.LogError(name + ",table not found");
+                    return null;
+                }
+                ScriptObject map = obj.GetValue("Map");
+                if (map.IsNull)
+                {
+                    Debug.LogError("map table not found");
+                    return null;
+                }
+                map.SetValue("MainPlayer", script.CreateObject(ScoUtils.GetMainPlayer()));
+            }
+            return scriptTable;
+        }
 
 
-          
+        public ScriptTable GetScriptTableByName(ScoScriptEnum scriptEnum, string fileName)
+        {
+            //获取到文件名称
+            string name = Path.GetFileNameWithoutExtension(fileName);
+            ScriptObject enumObj = CurrentScript[scriptEnum].GetValue(name);
+            if (!enumObj.IsNull)
+            {
+                return enumObj.GetValue(scriptEnum.ToString()) as ScriptTable;
+            }
+            return null;
+        }
 
-            //_currentScript.SetValue("MainPlayer", ScorpioManager.Instance.ScriptEngine.CreateObject(ScoUtils.GetMainPlayer()));
-            //Resource文件后缀改成txt  否则Unity不能识别TextAsset
-            //string content = FileUtils.Instance.ReadFile(file);
-            //TextAsset text = Resources.Load<TextAsset>("Scripts/" + file);
-            //if (!FileUtils.Instance.ExistsFile(file))
-            //{
-            //    //第一个参数是脚本摘要 有需求可以自己定义
-            //    Debug.LogError("找不到File : " + file);
-            //    return null;
-            //}
-            //return ScriptEngine.LoadFile(file);
-
-            //Debug.LogError("找不到File : " + file);
-            //return null;
+        public object Call(ScriptObject table, string funcName, params object[] para)
+        {
+            ScriptObject fun = table.GetValue(funcName);
+            if (fun != null)
+            {
+                return fun.call(para);
+            }
+            return null;
         }
 
         //public ScriptTable AddComponent(Component component, string name)
@@ -148,6 +194,27 @@ namespace RPGGame.Manager
 
         public bool Load()
         {
+            foreach (int item in Enum.GetValues(typeof(ScoScriptEnum)))
+            {
+                ScoScriptEnum sco = (ScoScriptEnum)item;
+                if (CurrentScript.ContainsKey(sco) || CurrentLoadFileName.ContainsKey(sco))
+                {
+                    Debug.LogWarning("CurrentScript or CurrentLoadFileName exist this enum :" + sco.ToString());
+                    continue;
+                }
+                Script script = new Script();
+                script.LoadLibrary();
+                script.PushAssembly(typeof(System.Action).GetTypeInfo().Assembly);                        //System.Core.dll
+                script.PushAssembly(typeof(GameObject).GetTypeInfo().Assembly);                           //UnityEngine.dll
+                script.PushAssembly(typeof(UnityEngine.UI.CanvasScaler).GetTypeInfo().Assembly);          //UnityEngine.UI.dll
+                script.PushAssembly(typeof(UnityEngine.Networking.MsgType).GetTypeInfo().Assembly);       //UnityEngine.Networking.dll
+                script.LoadFile(Global.GlobalPath.GlobalMainPath);
+                script.SetObject("print", new ScorpioFunction(print));
+                script.SetObject("printWarn", new ScorpioFunction(print));
+                script.SetObject("printError", new ScorpioFunction(print));
+                CurrentScript.Add(sco, script);
+                CurrentLoadFileName.Add(sco, new List<string>());
+            }
             //ScorpioDelegateFactory.Initialize();
             //_scriptEngine = new Script();
             //ScriptEngine.LoadLibrary();
@@ -164,13 +231,63 @@ namespace RPGGame.Manager
 
         public bool UnLoad()
         {
+            foreach (KeyValuePair<ScoScriptEnum, Script> item in CurrentScript)
+            {
+                item.Value.ClearStackInfo();
+            }
+            CurrentScript.Clear();
+            CurrentLoadFileName.Clear();
             return true;
         }
 
         public void OnUpdate()
         {
         }
+        #region ScoScript
 
+        /// <summary>
+        /// 脚本打印
+        /// </summary>
+        /// <param name="script"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        private object print(Script script, object[] Parameters)
+        {
+            for (int i = 0; i < Parameters.Length; ++i)
+            {
+                Debug.Log(Parameters[i].ToString());
+            }
+            return null;
+        }
+        /// <summary>
+        /// 脚本打印
+        /// </summary>
+        /// <param name="script"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        private object printWarn(Script script, object[] Parameters)
+        {
+            for (int i = 0; i < Parameters.Length; ++i)
+            {
+                Debug.LogWarning(Parameters[i].ToString());
+            }
+            return null;
+        }
+        /// <summary>
+        /// 脚本打印
+        /// </summary>
+        /// <param name="script"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        private object printError(Script script, object[] Parameters)
+        {
+            for (int i = 0; i < Parameters.Length; ++i)
+            {
+                Debug.LogError(Parameters[i].ToString());
+            }
+            return null;
+        }
+        #endregion
 
 
         //private void print(ScriptObject[] args)

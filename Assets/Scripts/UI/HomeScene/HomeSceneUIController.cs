@@ -18,7 +18,6 @@ namespace RPGGame.UI
             UIManager.Instance.ShowMask();
             ArchivedUtils.Instance.LoadArchived();
             //yield return null;
-            ScorpioManager.Instance.Load();
             StartCoroutine(LoadLevel());
         }
 

@@ -21,7 +21,8 @@ public class ImmediateSceneConfig : MonoBehaviour
     void Start()
     {
         RPGGame.Global.GlobalData.SelectGame = "Default";
-        ZipUtils.UnzipFile(GlobalPath.StreamingAssetsPath + "/Default", Application.persistentDataPath + "/Default");
+        //ZipUtils.UnzipFile(GlobalPath.StreamingAssetsPath + "/Default", Application.persistentDataPath + "/Default");
+        ZipUtils.UnzipFile(GlobalPath.StreamingAssetsPath + "/GlobalData", Application.persistentDataPath);
         ArchivedUtils.Instance.LoadArchived();
 
         //#endif
@@ -60,8 +61,8 @@ public class ImmediateSceneConfig : MonoBehaviour
         DeviceManager.Instance.Load();
         //yield return null;
         //MonsterManager.Instance.Load();
-        //yield return null;
-        //ScorpioManager.Instance.Load();
+        yield return null;
+        ScorpioManager.Instance.Load();
 #if UNITY_EDITOR
         yield return null;
         QuickMemoryEditorManager.Instance.Load();

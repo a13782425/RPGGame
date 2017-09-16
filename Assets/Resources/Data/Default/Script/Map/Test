@@ -1,6 +1,6 @@
 Map = {
-    ErrorText = "测试错误",
+	ErrorText = "测试错误",
 	function Take(){
-		Debug.LogError(this.ErrorText+"====>"+MainPlayer.name);
+		Debug.LogError(this.ErrorText+"====>"+this.MainPlayer.name);
 	}
 }
