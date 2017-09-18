@@ -180,4 +180,23 @@ namespace RPGGame.Enums
         Monster
     }
 
+    #region ScrollView
+
+    public enum MovementType
+    {
+        Unrestricted, // Unrestricted movement -- can scroll forever
+        Elastic, // Restricted but flexible -- can go past the edges, but springs back in place
+        Clamped, // Restricted movement where it's not possible to go past the edges
+    }
+
+    public enum ScrollbarVisibility
+    {
+        Permanent,
+        AutoHide,
+        AutoHideAndExpandViewport,
+    }
+
+
+    #endregion
+
 }
