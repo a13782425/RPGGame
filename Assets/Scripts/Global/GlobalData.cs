@@ -362,7 +362,7 @@ namespace RPGGame.Global
         {
             {UIEnum.MaskUI , "Tooltip/MaskUI"},
             {UIEnum.DialogUI , "Tooltip/DialogUI"},
-            {UIEnum.MoveUI , "Main/MoveUI"},
+            {UIEnum.MoveUI , "Main/JoyStickUI"},
             {UIEnum.OperationUI , "Main/OperationUI"},
             {UIEnum.MenuUI , "Main/MenuUI"},
             {UIEnum.SettingUI , "Menu/SettingMenuUI"},

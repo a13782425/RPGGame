@@ -33,7 +33,7 @@ public class JoystickHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         dir = Vector2.ClampMagnitude(pos - (Vector2)parentRect.localPosition, joy.range);
         if (OnHandleDrag != null)
         {
-            OnHandleDrag(dir);
+            OnHandleDrag(dir / joy.range);
         }
     }
 
@@ -42,9 +42,9 @@ public class JoystickHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         isDrag = true;
         Vector2 pos = eventData.position - screenVec;
         dir = Vector2.ClampMagnitude(pos - (Vector2)parentRect.localPosition, joy.range);
-        if(OnHandleDown != null)
+        if (OnHandleDown != null)
         {
-            OnHandleDown(dir);
+            OnHandleDown(dir / joy.range);
         }
     }
 
@@ -52,7 +52,7 @@ public class JoystickHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     {
         isDrag = false;
         dir = Vector2.zero;
-        if(OnHandleUp != null)
+        if (OnHandleUp != null)
         {
             OnHandleUp(dir);
         }
@@ -60,7 +60,7 @@ public class JoystickHandle : MonoBehaviour, IPointerDownHandler, IPointerUpHand
 
     private void Update()
     {
-        float speed = isDrag ? joy.damp: joy.gravity;
+        float speed = isDrag ? joy.damp : joy.gravity;
         rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, dir, Time.deltaTime * speed);
     }
 }

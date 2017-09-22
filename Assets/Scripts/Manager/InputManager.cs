@@ -9,11 +9,13 @@ namespace RPGGame.Manager
         public delegate void EventOnButtonClick(ButtonEnum buttonEnum, params object[] data);
 
         public delegate void EventOnAxis(ButtonEnum buttonEnum, float val);
+        public delegate void EventOnJoy(Vector2 vec);
 
         /// <summary>
         /// 移动回调
         /// </summary>
         public EventOnAxis OnPlayerMove;
+        public EventOnJoy onJoyStickMove;
         /// <summary>
         /// 确定按钮回调
         /// </summary>
@@ -46,6 +48,16 @@ namespace RPGGame.Manager
                 if (OnPlayerMove != null)
                 {
                     OnPlayerMove(buttonEnum, val);
+                }
+            }
+        }
+        public void OnPlayerMoveJoy(Vector2 vec, bool isUp = false)
+        {
+            if (Global.GlobalData.IsCanMove)
+            {
+                if (onJoyStickMove != null)
+                {
+                    onJoyStickMove(vec);
                 }
             }
         }

@@ -86,6 +86,8 @@ namespace RPGGame.Controller
         void Awake()
         {
             InputManager.Instance.OnPlayerMove += MoveHandle;
+
+            InputManager.Instance.onJoyStickMove += MoveHandle_Joy;
         }
 
         void Start()
@@ -244,6 +246,107 @@ namespace RPGGame.Controller
                     {
                         Vector2 vec = CurrentNpcController.transform.position - this.transform.position;
                         CreativeSpore.CharAnimationController.eDir dir = MathUtils.Instance.GetAxisDirection(vec.normalized);
+                        Debug.LogError(dir.ToString());
+                        if (dir == m_animCtrl.CurrentDir)
+                        {
+                            m_phyChar.Dir = Vector3.zero;
+                            //m_phyChar.IsNeedCheck = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                m_animCtrl.IsAnimated = false;
+            }
+        }
+
+        private void MoveHandle_Joy(Vector2 vec)
+        {
+            m_timerBlockDir -= Time.deltaTime;
+            //switch (buttonEnum)
+            //{
+            //    case ButtonEnum.X:
+            //        m_phyChar.Dir = new Vector3(val, 0, 0);
+            //        break;
+            //    case ButtonEnum.Y:
+            //        m_phyChar.Dir = new Vector3(0, val, 0);
+            //        break;
+            //    default:
+            //        m_phyChar.Dir = new Vector3(0, 0, 0);
+            //        break;
+            //}
+            m_phyChar.Dir = vec;
+
+            if (m_phyChar.IsMoving)
+            {
+                m_animCtrl.IsAnimated = true;
+
+                if (m_timerBlockDir <= 0f)
+                {
+                    float x, y;
+                    x = vec.x;
+                    y = vec.y;
+
+                    if(x > 0)
+                    {
+                        if(x > Mathf.Abs(y))
+                        {
+                            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.RIGHT;
+                        }
+                        else if(x > y)
+                        {
+                            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.DOWN;
+                        }
+                        else
+                        {
+                            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.UP;
+                        }
+                    }
+                    else
+                    {
+                        if (-x > Mathf.Abs(y))
+                        {
+                            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.LEFT;
+                        }
+                        else if (x > y)
+                        {
+                            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.DOWN;
+                        }
+                        else
+                        {
+                            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.UP;
+                        }
+                    }
+                    //switch (buttonEnum)
+                    //{
+                    //    case ButtonEnum.X:
+                    //        if (val > 0)
+                    //        {
+                    //            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.RIGHT;
+                    //        }
+                    //        else
+                    //        {
+                    //            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.LEFT;
+                    //        }
+                    //        break;
+                    //    case ButtonEnum.Y:
+                    //        if (val > 0)
+                    //        {
+                    //            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.UP;
+                    //        }
+                    //        else
+                    //        {
+                    //            m_animCtrl.CurrentDir = CreativeSpore.CharAnimationController.eDir.DOWN;
+                    //        }
+                    //        break;
+                    //    default:
+                    //        break;
+                    //}
+                    if (CurrentNpcController != null)
+                    {
+                        Vector2 vect = CurrentNpcController.transform.position - this.transform.position;
+                        CreativeSpore.CharAnimationController.eDir dir = MathUtils.Instance.GetAxisDirection(vect.normalized);
                         Debug.LogError(dir.ToString());
                         if (dir == m_animCtrl.CurrentDir)
                         {
